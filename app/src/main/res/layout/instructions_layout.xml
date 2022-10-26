@@ -13,6 +13,20 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp" >
 
+        <TextView
+            android:id="@+id/availableCoinsTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/nuniti_bold"
+            android:text="Available Coins: 881993"
+            android:layout_alignParentStart="true"/>
+
+
         <ImageView
             android:id="@+id/productImage"
             android:layout_width="40dp"
@@ -20,7 +34,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/availableCoinsTv"
             android:background="@drawable/button_background"
             android:backgroundTint="@color/green"
             android:padding="8dp"
@@ -34,9 +49,10 @@
             android:textSize="14sp"
             android:textColor="@color/black"
             android:textStyle="bold"
+            android:layout_below="@id/availableCoinsTv"
             android:fontFamily="@font/nuniti_bold"
             android:layout_toEndOf="@id/productImage"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="4dp"
             android:layout_marginStart="4dp"/>
 

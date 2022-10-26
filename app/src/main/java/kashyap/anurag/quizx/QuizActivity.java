@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,23 +46,13 @@ public class QuizActivity extends AppCompatActivity {
 
         categoryId = getIntent().getStringExtra("categoryId");
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        checkUser();
-
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.mainLayout.setVisibility(View.GONE);
 
-        FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot snapshot) {
-                        int size = snapshot.size();
-                        Random random = new Random();
-                        int rand = random.nextInt(size);
-                        loadAllQuestions(categoryId, rand);
-                    }
-                });
+        firebaseAuth = FirebaseAuth.getInstance();
+        checkUser();
+
+        checkAvailableCoins();
 
         resetTimer();
 
@@ -88,6 +79,68 @@ public class QuizActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private void checkAvailableCoins() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.mainLayout.setVisibility(View.GONE);
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                String coins = snapshot.get("coins").toString();
+                int availableCoins = Integer.parseInt(coins);
+                if (availableCoins < 200) {
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+                    Toast.makeText(QuizActivity.this, "You need atLeast 200 coins to play quiz", Toast.LENGTH_SHORT).show();
+                    showCoinNotAvailable();
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.mainLayout.setVisibility(View.GONE);
+                } else {
+                    FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot snapshot) {
+                                    int size = snapshot.size();
+                                    Random random = new Random();
+                                    int rand = random.nextInt(size);
+                                    loadAllQuestions(categoryId, rand);
+                                }
+                            });
+                }
+            }
+        });
+    }
+    private void showCoinNotAvailable() {
+
+        Dialog timeOutDialog = new Dialog(QuizActivity.this, R.style.instructionStyle);
+        timeOutDialog.setContentView(R.layout.coin_not_available_dialog);
+        timeOutDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView quitBtn = timeOutDialog.findViewById(R.id.quitBtn);
+        timeOutDialog.setCancelable(false);
+        timeOutDialog.setCanceledOnTouchOutside(false);
+
+        quitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timeOutDialog.dismiss();
+                if (timer != null) {
+                    timer.cancel();
+                }
+                startActivity(new Intent(QuizActivity.this, MainActivity.class));
+                finishAffinity();
+            }
+        });
+        timeOutDialog.show();
+    }
+
+    private void chargePlayingCost() {
+        final int playingCost = 25;
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
+        documentReference.update("coins", FieldValue.increment(-playingCost));
     }
 
     private void loadAllQuestions(String categoryId, int rand) {
@@ -153,13 +206,18 @@ public class QuizActivity extends AppCompatActivity {
 
         TextView quitBtn = timeOutDialog.findViewById(R.id.quitBtn);
         TextView continueBtn = timeOutDialog.findViewById(R.id.continueBtn);
-        timeOutDialog.setCancelable(true);
+        timeOutDialog.setCancelable(false);
         timeOutDialog.setCanceledOnTouchOutside(false);
 
         quitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                timeOutDialog.dismiss();
+                if (timer != null) {
+                    timer.cancel();
+                }
+                startActivity(new Intent(QuizActivity.this, MainActivity.class));
+                finishAffinity();
             }
         });
         continueBtn.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +229,9 @@ public class QuizActivity extends AppCompatActivity {
                     index++;
                     setNextQuestion();
                 } else {
+                    if (timer != null) {
+                        timer.cancel();
+                    }
                     Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                     intent.putExtra("correct", correctAnswers);
                     intent.putExtra("total", questionsArrayList.size());
@@ -261,6 +322,9 @@ public class QuizActivity extends AppCompatActivity {
                     index++;
                     setNextQuestion();
                 } else {
+                    if (timer != null) {
+                        timer.cancel();
+                    }
                     Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
                     intent.putExtra("correct", correctAnswers);
                     intent.putExtra("total", questionsArrayList.size());

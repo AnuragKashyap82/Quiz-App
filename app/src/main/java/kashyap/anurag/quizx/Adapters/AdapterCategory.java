@@ -76,6 +76,10 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
 
         TextView closeDialogBtn = instructionsDialog.findViewById(R.id.closeDialogBtn);
         TextView continueBtn = instructionsDialog.findViewById(R.id.continueBtn);
+        TextView availableCoinsTv = instructionsDialog.findViewById(R.id.availableCoinsTv);
+
+        loadAvailableCoins(availableCoinsTv);
+
         instructionsDialog.setCancelable(true);
 
         closeDialogBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,28 +100,18 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
         instructionsDialog.show();
     }
 
-//    private void checkAvailableCoins(String categoryId) {
-//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-//        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-//                String coins = snapshot.get("coins").toString();
-//                int availableCoins = Integer.parseInt(coins);
-//                if (availableCoins < 99) {
-//                    Toast.makeText(context, "You need atleast 100 coins to play quiz", Toast.LENGTH_SHORT).show();
-//                } else {
-//
-//                    chargePlayingCost();
-//                }
-//            }
-//        });
-//    }
-//
-//    private void chargePlayingCost() {
-//        final int playingCost = 25;
-//        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-//        documentReference.update("coins", FieldValue.increment(-playingCost));
-//    }
+    private void loadAvailableCoins(TextView availableCoinsTv) {
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (snapshot.exists()){
+                    String coin = snapshot.get("coins").toString();
+                    availableCoinsTv.setText("Available Coins: "+coin);
+                }
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {

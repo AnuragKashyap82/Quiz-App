@@ -5,6 +5,7 @@ import kashyap.anurag.quizx.databinding.ActivityResultBinding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,6 +44,13 @@ public class ResultActivity extends AppCompatActivity {
         updateCoins(earnedPoints);
         updateLostCoins(lostPoints);
 
+        binding.reStartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ResultActivity.this, MainActivity.class));
+                finishAffinity();
+            }
+        });
     }
 
     private void updateCoins(int earnedPoints) {
@@ -55,6 +63,7 @@ public class ResultActivity extends AppCompatActivity {
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
         documentReference.update("coins", FieldValue.increment(-lostPoints));
     }
+
 
     @Override
     public void onBackPressed() {
