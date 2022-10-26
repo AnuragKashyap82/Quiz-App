@@ -1,5 +1,6 @@
 package kashyap.anurag.quizx;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import kashyap.anurag.quizx.Models.ModelQuestions;
@@ -14,8 +15,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -25,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class QuizActivity extends AppCompatActivity {
@@ -52,7 +60,24 @@ public class QuizActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         checkUser();
 
-        checkAvailableCoins();
+        FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot snapshot) {
+                        if (snapshot.size() == 0 && snapshot.size() < 5){
+                            binding.mainLayout.setVisibility(View.GONE);
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.noQuestionTv.setVisibility(View.VISIBLE);
+                        }else {
+                            int size = snapshot.size();
+                            Random random = new Random();
+                            int rand = random.nextInt(size);
+                            loadAllQuestions(categoryId, rand);
+                        }
+
+                    }
+                });
 
         resetTimer();
 
@@ -60,11 +85,13 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(QuizActivity.this, AddQuestionsActivity.class);
-                intent.putExtra("categoryId", ""+categoryId);
+                intent.putExtra("categoryId", "" + categoryId);
                 startActivity(intent);
             }
         });
     }
+
+
 
     private void checkUser() {
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
@@ -72,75 +99,13 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                 String userType = snapshot.get("userType").toString();
-                if (userType.equals("admin")){
+                if (userType.equals("admin")) {
                     binding.addQuestionsBtn.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     binding.addQuestionsBtn.setVisibility(View.GONE);
                 }
             }
         });
-    }
-    private void checkAvailableCoins() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.mainLayout.setVisibility(View.GONE);
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                String coins = snapshot.get("coins").toString();
-                int availableCoins = Integer.parseInt(coins);
-                if (availableCoins < 200) {
-                    if (timer != null) {
-                        timer.cancel();
-                    }
-                    Toast.makeText(QuizActivity.this, "You need atLeast 200 coins to play quiz", Toast.LENGTH_SHORT).show();
-                    showCoinNotAvailable();
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.mainLayout.setVisibility(View.GONE);
-                } else {
-                    FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot snapshot) {
-                                    int size = snapshot.size();
-                                    Random random = new Random();
-                                    int rand = random.nextInt(size);
-                                    loadAllQuestions(categoryId, rand);
-                                }
-                            });
-                }
-            }
-        });
-    }
-    private void showCoinNotAvailable() {
-
-        Dialog timeOutDialog = new Dialog(QuizActivity.this, R.style.instructionStyle);
-        timeOutDialog.setContentView(R.layout.coin_not_available_dialog);
-        timeOutDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        TextView quitBtn = timeOutDialog.findViewById(R.id.quitBtn);
-        timeOutDialog.setCancelable(false);
-        timeOutDialog.setCanceledOnTouchOutside(false);
-
-        quitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timeOutDialog.dismiss();
-                if (timer != null) {
-                    timer.cancel();
-                }
-                startActivity(new Intent(QuizActivity.this, MainActivity.class));
-                finishAffinity();
-            }
-        });
-        timeOutDialog.show();
-    }
-
-    private void chargePlayingCost() {
-        final int playingCost = 25;
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.update("coins", FieldValue.increment(-playingCost));
     }
 
     private void loadAllQuestions(String categoryId, int rand) {
@@ -156,7 +121,7 @@ public class QuizActivity extends AppCompatActivity {
                             FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
                                     .whereLessThanOrEqualTo("index", rand)
                                     .orderBy("index")
-                                    .limit(5).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    .limit(snapshot.getDocuments().size()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot snapshot) {
                                             for (DocumentSnapshot snapshot1 : snapshot) {
@@ -166,12 +131,10 @@ public class QuizActivity extends AppCompatActivity {
                                             binding.progressBar.setVisibility(View.GONE);
                                             binding.mainLayout.setVisibility(View.VISIBLE);
                                             setNextQuestion();
+
                                         }
                                     });
-                        }else if (snapshot.getDocuments().size() == 0){
-                            binding.mainLayout.setVisibility(View.GONE);
-                            binding.progressBar.setVisibility(View.GONE);
-                            binding.noQuestionTv.setVisibility(View.VISIBLE);
+                            chargePlayingCost();
                         } else {
                             for (DocumentSnapshot snapshot1 : snapshot) {
                                 ModelQuestions modelQuestions = snapshot1.toObject(ModelQuestions.class);
@@ -180,6 +143,7 @@ public class QuizActivity extends AppCompatActivity {
                             binding.progressBar.setVisibility(View.GONE);
                             binding.mainLayout.setVisibility(View.VISIBLE);
                             setNextQuestion();
+                            chargePlayingCost();
                         }
                     }
                 });
@@ -198,6 +162,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         };
     }
+
     private void showTimeOutDialog() {
 
         Dialog timeOutDialog = new Dialog(QuizActivity.this, R.style.instructionStyle);
@@ -335,6 +300,48 @@ public class QuizActivity extends AppCompatActivity {
                 break;
         }
     }
+    private void chargePlayingCost() {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        ref
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String coins = "" + snapshot.child("coins").getValue();
+
+                        if (coins.equals("") || coins.equals("null")) {
+                            coins = "0";
+                        }
+
+                        long updatedCoins = Long.parseLong(coins) - 25;
+
+
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("coins", updatedCoins);
+
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+                        reference.child(firebaseAuth.getUid())
+                                .updateChildren(hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
 
     @Override
     public void onBackPressed() {

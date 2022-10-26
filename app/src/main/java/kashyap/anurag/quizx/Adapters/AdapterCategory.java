@@ -11,10 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.squareup.picasso.Picasso;
@@ -91,9 +95,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, QuizActivity.class);
-                intent.putExtra("categoryId", "" + categoryId);
-                context.startActivity(intent);
+                checkAvailableCoins(categoryId);
                 instructionsDialog.dismiss();
             }
         });
@@ -101,16 +103,64 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
     }
 
     private void loadAvailableCoins(TextView availableCoinsTv) {
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    String coin = snapshot.get("coins").toString();
+                    String coin = ""+snapshot.child("coins").getValue();
                     availableCoinsTv.setText("Available Coins: "+coin);
                 }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+    }
+
+    private void checkAvailableCoins(String categoryId) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String coins = ""+snapshot.child("coins").getValue();
+                int availableCoins = Integer.parseInt(coins);
+                if (availableCoins < 200) {
+                    Toast.makeText(context, "You need atLeast 200 coins to play quiz", Toast.LENGTH_SHORT).show();
+                    showCoinNotAvailable();
+                } else {
+                    Intent intent = new Intent(context, QuizActivity.class);
+                    intent.putExtra("categoryId", "" + categoryId);
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showCoinNotAvailable() {
+
+        Dialog timeOutDialog = new Dialog(context, R.style.instructionStyle);
+        timeOutDialog.setContentView(R.layout.coin_not_available_dialog);
+        timeOutDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView quitBtn = timeOutDialog.findViewById(R.id.quitBtn);
+        timeOutDialog.setCancelable(true);
+        timeOutDialog.setCanceledOnTouchOutside(false);
+
+        quitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timeOutDialog.dismiss();
+            }
+        });
+        timeOutDialog.show();
     }
 
     @Override

@@ -1,16 +1,24 @@
 package kashyap.anurag.quizx;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import kashyap.anurag.quizx.databinding.ActivityResultBinding;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class ResultActivity extends AppCompatActivity {
     private ActivityResultBinding binding;
@@ -41,8 +49,7 @@ public class ResultActivity extends AppCompatActivity {
         int overAllPoints = earnedPoints - lostPoints;
         binding.overAllCoinsTv.setText(String.valueOf(overAllPoints));
 
-        updateCoins(earnedPoints);
-        updateLostCoins(lostPoints);
+        updateCoins(overAllPoints);
 
         binding.reStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,17 +60,48 @@ public class ResultActivity extends AppCompatActivity {
         });
     }
 
-    private void updateCoins(int earnedPoints) {
+    private void updateCoins(int overAllPoints) {
 
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.update("coins", FieldValue.increment(earnedPoints));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(firebaseAuth.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String coins = "" + snapshot.child("coins").getValue();
+
+                        if (coins.equals("") || coins.equals("null")) {
+                            coins = "0";
+                        }
+
+                        long updatedCoins = Long.parseLong(coins) + overAllPoints;
+
+
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("coins", updatedCoins);
+
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+                        reference.child(firebaseAuth.getUid())
+                                .updateChildren(hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(ResultActivity.this, "" + updatedCoins, Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
-    private void updateLostCoins(int lostPoints) {
-
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.update("coins", FieldValue.increment(-lostPoints));
-    }
-
 
     @Override
     public void onBackPressed() {

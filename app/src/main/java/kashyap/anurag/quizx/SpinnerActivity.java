@@ -1,5 +1,6 @@
 package kashyap.anurag.quizx;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import kashyap.anurag.quizx.Spinner.LuckyItem;
 import kashyap.anurag.quizx.Spinner.LuckyWheelView;
@@ -11,24 +12,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class SpinnerActivity extends AppCompatActivity {
 
     private ActivitySpinnerBinding binding;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySpinnerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         List<LuckyItem> data = new ArrayList<>();
 
@@ -139,19 +149,49 @@ public class SpinnerActivity extends AppCompatActivity {
                 break;
         }
 
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-
         long finalCash = cash;
-        database
-                .collection("Users")
-                .document(FirebaseAuth.getInstance().getUid())
-                .update("coins", FieldValue.increment(cash)).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(firebaseAuth.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(SpinnerActivity.this, "Coins added in account.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SpinnerActivity.this, SpinnerResultActivity.class);
-                        intent.putExtra("cash", finalCash);
-                        startActivity(intent);
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String coins = "" + snapshot.child("coins").getValue();
+
+                        if (coins.equals("") || coins.equals("null")) {
+                            coins = "0";
+                        }
+
+                        long updatedCoins = Long.parseLong(coins) + finalCash;
+
+
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("coins", updatedCoins);
+
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+                        reference.child(firebaseAuth.getUid())
+                                .updateChildren(hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(SpinnerActivity.this, "" + updatedCoins, Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SpinnerActivity.this, SpinnerResultActivity.class);
+                                        intent.putExtra("cash", finalCash);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
     }

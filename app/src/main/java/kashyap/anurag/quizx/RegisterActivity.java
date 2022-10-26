@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -114,7 +117,6 @@ public class RegisterActivity extends AppCompatActivity {
         hashMap.put("name", ""+name);
         hashMap.put("email", ""+email);
         hashMap.put("password", ""+password);
-        hashMap.put("coins", coins);
         hashMap.put("profileImage", "");
         hashMap.put("userType", "users");
         hashMap.put("uid", ""+firebaseAuth.getUid());
@@ -125,10 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                            finishAffinity();
-                            binding.progressBar.setVisibility(View.GONE);
-                            binding.createAccountBtn.setVisibility(View.VISIBLE);
+                            addCoinsToRealTimeDb();
                         }else {
                             Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             binding.progressBar.setVisibility(View.GONE);
@@ -142,6 +141,45 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         binding.progressBar.setVisibility(View.GONE);
                         binding.createAccountBtn.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
+    private void addCoinsToRealTimeDb() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.createAccountBtn.setVisibility(View.GONE);
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("coins", "400");
+        hashMap.put("name", ""+name);
+        hashMap.put("email", ""+email);
+        hashMap.put("profileImage", "");
+        hashMap.put("userType", "users");
+        hashMap.put("uid", ""+firebaseAuth.getUid());
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        databaseReference.setValue(hashMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            finishAffinity();
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.createAccountBtn.setVisibility(View.VISIBLE);
+                        }else {
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.createAccountBtn.setVisibility(View.VISIBLE);
+                            Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.createAccountBtn.setVisibility(View.VISIBLE);
+                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

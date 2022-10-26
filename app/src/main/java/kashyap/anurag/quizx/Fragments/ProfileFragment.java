@@ -26,10 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -89,12 +92,36 @@ public class ProfileFragment extends Fragment {
 
         return binding.getRoot();
     }
+    private void loadMyDetails() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.updateBtn.setVisibility(View.GONE);
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                String name = snapshot.get("name").toString();
+                String email = snapshot.get("email").toString();
+                String profileImage = snapshot.get("profileImage").toString();
+
+                binding.nameEt.setText(name);
+                binding.emailEt.setText(email);
+
+                try {
+                    Picasso.get().load(profileImage).placeholder(R.drawable.ic_profile_white).into(binding.profileIv);
+                } catch (Exception e) {
+                    binding.profileIv.setImageResource(R.drawable.ic_profile_white);
+                }
+                binding.progressBar.setVisibility(View.GONE);
+                binding.updateBtn.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 
     private void validateData() {
         name = binding.nameEt.getText().toString().trim();
-        if (name.isEmpty()){
+        if (name.isEmpty()) {
             Toast.makeText(getActivity(), "Enter Your name!!!!", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             updateDataToDataBase();
         }
     }
@@ -112,9 +139,7 @@ public class ProfileFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            binding.progressBar.setVisibility(View.GONE);
-                            binding.updateBtn.setVisibility(View.VISIBLE);
-                            Toast.makeText(getActivity(), "Profile Updated", Toast.LENGTH_SHORT).show();
+                            updateToRealTimeDbWI();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -149,9 +174,7 @@ public class ProfileFragment extends Fragment {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                binding.progressBar.setVisibility(View.GONE);
-                                                binding.updateBtn.setVisibility(View.VISIBLE);
-                                                Toast.makeText(getActivity(), "Profile Updated", Toast.LENGTH_SHORT).show();
+                                                updateToRealTimeDb(downloadImageUri);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -179,30 +202,70 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void loadMyDetails() {
+    private void updateToRealTimeDbWI() {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.updateBtn.setVisibility(View.GONE);
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(firebaseAuth.getUid());
-        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException error) {
-                String name = snapshot.get("name").toString();
-                String email = snapshot.get("email").toString();
-                String profileImage = snapshot.get("profileImage").toString();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name", "" + name);
 
-                binding.nameEt.setText(name);
-                binding.emailEt.setText(email);
-
-                try {
-                    Picasso.get().load(profileImage).placeholder(R.drawable.ic_profile_white).into(binding.profileIv);
-                } catch (Exception e) {
-                    binding.profileIv.setImageResource(R.drawable.ic_profile_white);
-                }
-                binding.progressBar.setVisibility(View.GONE);
-                binding.updateBtn.setVisibility(View.VISIBLE);
-            }
-        });
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        databaseReference.updateChildren(hashMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.updateBtn.setVisibility(View.VISIBLE);
+                        } else {
+                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.updateBtn.setVisibility(View.VISIBLE);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.updateBtn.setVisibility(View.VISIBLE);
+                    }
+                });
     }
+
+    private void updateToRealTimeDb(Uri downloadImageUri) {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.updateBtn.setVisibility(View.GONE);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name", "" + name);
+        hashMap.put("profileImage", "" + downloadImageUri);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
+        databaseReference.updateChildren(hashMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.updateBtn.setVisibility(View.VISIBLE);
+                        } else {
+                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            binding.progressBar.setVisibility(View.GONE);
+                            binding.updateBtn.setVisibility(View.VISIBLE);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        binding.progressBar.setVisibility(View.GONE);
+                        binding.updateBtn.setVisibility(View.VISIBLE);
+                    }
+                });
+
+    }
+
     private void showImagePickDialog() {
         String[] options = {"Camera", "Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -227,6 +290,7 @@ public class ProfileFragment extends Fragment {
                 })
                 .show();
     }
+
     private void pickImageCamera() {
 
         ContentValues values = new ContentValues();
