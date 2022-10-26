@@ -48,9 +48,20 @@ public class QuizActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         checkUser();
 
-        Random random = new Random();
-        int rand = random.nextInt(12);
-        loadAllQuestions(categoryId, rand);
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.mainLayout.setVisibility(View.GONE);
+
+        FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot snapshot) {
+                        int size = snapshot.size();
+                        Random random = new Random();
+                        int rand = random.nextInt(size);
+                        loadAllQuestions(categoryId, rand);
+                    }
+                });
 
         resetTimer();
 
@@ -264,6 +275,9 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (timer != null) {
+            timer.cancel();
+        }
         startActivity(new Intent(QuizActivity.this, MainActivity.class));
         finishAffinity();
     }
