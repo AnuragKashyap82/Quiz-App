@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home"
+        android:title="Home"
+        android:enabled="true"
+        android:icon="@drawable/ic_home_white"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/rank"
+        android:title="Rank"
+        android:enabled="true"
+        android:icon="@drawable/ic_rank_white"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/wallet"
+        android:title="Wallet"
+        android:enabled="true"
+        android:icon="@drawable/ic_wallet_white"
+        android:iconTint="@color/white"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_profile_white"
+        android:iconTint="@color/white"
+        app:showAsAction="always"/>
+
+
+
+</menu>

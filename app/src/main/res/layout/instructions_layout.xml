@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="7dp"
+    android:layout_marginStart="30dp"
+    android:layout_marginEnd="30dp"
+    app:cardCornerRadius="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" >
+
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/green"
+            android:padding="8dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On Correct answer"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/nuniti_bold"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"/>
+
+        <TextView
+            android:id="@+id/productTitle"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="You will earn 10 points for each"
+            android:textSize="14sp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:layout_below="@id/tv"
+            android:fontFamily="@font/nunito_light"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"/>
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/productImage"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/red"
+            android:padding="8dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On Incorrect answer"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/nuniti_bold"
+            android:textStyle="bold"
+            android:layout_below="@id/productTitle"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"/>
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="5 coins will be deducted for each"
+            android:textSize="14sp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:fontFamily="@font/nunito_light"
+            android:layout_below="@id/tv1"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"/>
+
+        <ImageView
+            android:id="@+id/iv2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/iv"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/red"
+            android:padding="8dp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/tv4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Playing Cost"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/nuniti_bold"
+            android:layout_below="@id/tv3"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"/>
+
+        <TextView
+            android:id="@+id/tv6"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="For playing quiz you will cost 25 coins"
+            android:textSize="14sp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:layout_below="@id/tv4"
+            android:layout_toEndOf="@id/productImage"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/nunito_light"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_below="@id/iv2"
+            android:weightSum="2"
+            android:layout_marginTop="22dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/closeDialogBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_background"
+                android:textStyle="normal"
+                android:fontFamily="@font/nuniti_bold"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginEnd="4dp"
+                android:text="Cancel"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/continueBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_background"
+                android:textStyle="normal"
+                android:fontFamily="@font/nuniti_bold"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginStart="4dp"
+                android:text="Continue"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

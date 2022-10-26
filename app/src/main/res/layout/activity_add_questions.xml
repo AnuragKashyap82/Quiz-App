@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AddQuestionsActivity">
+
+    <RelativeLayout
+        android:id="@+id/topRl"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_white"
+            android:padding="18dp"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:fontFamily="@font/nuniti_bold"
+            android:text="Add Questions"
+            android:textSize="18dp"
+            android:layout_toEndOf="@id/backBtn"
+            android:layout_marginStart="26dp"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topRl">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/questionTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Question"
+                android:fontFamily="@font/nuniti_bold"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_below="@id/topRl"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/colorPrimary"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/questionTil"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/questionTv"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/questionEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/nunito_light"
+                    android:textSize="16dp"
+                    android:padding="12dp"
+                    android:hint="Question" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/optio1Til"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/questionTil"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/option1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/nunito_light"
+                    android:textSize="16dp"
+                    android:padding="12dp"
+                    android:hint="Option: 1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/optio2Til"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/optio1Til"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/option2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/nunito_light"
+                    android:textSize="16dp"
+                    android:padding="12dp"
+                    android:hint="Option: 2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/optio3Til"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/optio2Til"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/option3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/nunito_light"
+                    android:textSize="16dp"
+                    android:padding="12dp"
+                    android:hint="Option: 3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/optio4Til"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@id/optio3Til"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/option4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/nunito_light"
+                    android:textSize="16dp"
+                    android:padding="12dp"
+                    android:hint="Option: 4" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer"
+                android:fontFamily="@font/nuniti_bold"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_below="@id/optio4Til"
+                android:layout_marginTop="26dp"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/colorPrimary"/>
+
+
+            <TextView
+                android:id="@+id/answerTv"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_below="@id/tc"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_transparent_bg"
+                android:backgroundTint="@color/green"
+                android:textColor="@color/green"
+                android:fontFamily="@font/nuniti_bold"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:hint="Answer"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/inde"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Index"
+                android:fontFamily="@font/nuniti_bold"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_below="@id/answerTv"
+                android:layout_marginTop="26dp"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/colorPrimary"/>
+
+
+            <TextView
+                android:id="@+id/indexTv"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_below="@id/inde"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_transparent_bg"
+                android:backgroundTint="@color/green"
+                android:textColor="@color/green"
+                android:fontFamily="@font/nuniti_bold"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:hint="Index"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/uploadQuedtionBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:textSize="14sp"
+        android:text="Upload Question"
+        android:textAllCaps="false"
+        android:fontFamily="@font/nuniti_bold"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/white"
+        android:padding="6dp"
+        android:elevation="24dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

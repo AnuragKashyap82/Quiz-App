@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.HomeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/shape_rectangle_01">
+
+    </RelativeLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:elevation="15dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/quiz"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"/>
+
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18dp"
+                android:text="Instructions"
+                android:textStyle="bold"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_toEndOf="@id/imageView"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/choseCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-Choose Category"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_below="@id/tv"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/imageView"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/playTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-Play Quiz"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_below="@id/choseCategory"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/imageView"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/coinsTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-Collect Coins"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_below="@id/playTv"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/imageView"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/earnTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-Earn Money"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_below="@id/coinsTv"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_toEndOf="@id/imageView"
+                android:layout_marginEnd="16dp"/>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/spinLl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_below="@id/cardView"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <Button
+            android:id="@+id/spinWheelBtn"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:text="Spin Wheel"
+            android:textAllCaps="false"
+            android:visibility="visible"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/nuniti_bold"
+            android:drawableStart="@drawable/spin_wheels"
+            android:drawableTint="@color/colorPrimary"
+            android:drawablePadding="12dp"
+            android:textColor="@color/colorPrimary"
+            android:background="@drawable/button_transparent_bg"/>
+
+        <Button
+            android:id="@+id/inviteFrndBtn"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:text="Invite Friends"
+            android:textAllCaps="false"
+            android:layout_marginStart="4dp"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:fontFamily="@font/nuniti_bold"
+            android:textColor="@color/colorPrimary"
+            android:background="@drawable/button_transparent_bg"/>
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinLl">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="20dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/row_categories_items" />
+
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/white"
+        android:padding="6dp"
+        android:elevation="24dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addCategoryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:elevation="22dp"
+        android:layout_margin="26dp"
+        app:tint="@color/white"
+        android:visibility="gone"
+        android:src="@drawable/ic_baseline_add_24" />
+
+</RelativeLayout>

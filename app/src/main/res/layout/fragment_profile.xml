@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
+    tools:context=".Fragments.ProfileFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="550dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileIv"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="60dp"
+                android:src="@drawable/ic_profile_white"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="1dp" />
+
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="QuizX"
+                android:fontFamily="@font/nuniti_bold"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_below="@id/profileIv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"/>
+
+
+            <EditText
+                android:id="@+id/emailEt"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/button_transparent_bg"
+                android:layout_below="@id/appName"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="email"
+                android:drawableTint="@color/colorPrimary"
+                android:drawablePadding="12dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/nunito_light"
+                android:padding="12dp"
+                android:drawableStart="@drawable/ic_baseline_email_24"/>
+
+            <EditText
+                android:id="@+id/nameEt"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/button_transparent_bg"
+                android:layout_below="@id/emailEt"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="name"
+                android:drawableTint="@color/colorPrimary"
+                android:drawablePadding="12dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/nunito_light"
+                android:padding="12dp"
+                android:drawableStart="@drawable/ic_baseline_people_24"/>
+
+            <TextView
+                android:id="@+id/forgotPasswordTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:text="Forgot Password?"
+                android:fontFamily="@font/nuniti_bold"
+                android:layout_below="@id/nameEt"
+                android:layout_marginTop="26dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="22dp"/>
+
+            <LinearLayout
+                android:id="@+id/updateLl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/forgotPasswordTv"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginEnd="16dp">
+
+                <Button
+                    android:id="@+id/updateBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Update"
+                    android:textAllCaps="false"
+                    android:visibility="visible"
+                    android:background="@drawable/button_background"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "709713337073",
+    "project_id": "quizx-e7f05",
+    "storage_bucket": "quizx-e7f05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709713337073:android:76647e3a5e0a84b9876750",
+        "android_client_info": {
+          "package_name": "kashyap.anurag.quizx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709713337073-n99sonj7nglqksnf865gv66nfhk73u29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUXqCGgJiNiHpAa4m1FJr3efztJiIZnnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709713337073-n99sonj7nglqksnf865gv66nfhk73u29.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
