@@ -65,15 +65,16 @@ public class QuizActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot snapshot) {
-                        if (snapshot.size() == 0 && snapshot.size() < 5){
+                        if (snapshot.size() == 0 || snapshot.size() < 5){
                             binding.mainLayout.setVisibility(View.GONE);
                             binding.progressBar.setVisibility(View.GONE);
                             binding.noQuestionTv.setVisibility(View.VISIBLE);
                         }else {
+
                             int size = snapshot.size();
-                            Random random = new Random();
-                            int rand = random.nextInt(size);
-                            loadAllQuestions(categoryId, rand);
+                            final int max = size - 4;
+                            final int random = new Random().nextInt(max) ;
+                            loadAllQuestions(categoryId, random);
                         }
 
                     }
@@ -84,6 +85,9 @@ public class QuizActivity extends AppCompatActivity {
         binding.addQuestionsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (timer != null) {
+                    timer.cancel();
+                }
                 Intent intent = new Intent(QuizActivity.this, AddQuestionsActivity.class);
                 intent.putExtra("categoryId", "" + categoryId);
                 startActivity(intent);
@@ -108,18 +112,18 @@ public class QuizActivity extends AppCompatActivity {
         });
     }
 
-    private void loadAllQuestions(String categoryId, int rand) {
+    private void loadAllQuestions(String categoryId, int random) {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.mainLayout.setVisibility(View.GONE);
         FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
-                .whereGreaterThanOrEqualTo("index", rand)
+                .whereGreaterThanOrEqualTo("index", random)
                 .orderBy("index")
                 .limit(5).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot snapshot) {
                         if (snapshot.getDocuments().size() < 5 && snapshot.getDocuments().size() != 0) {
                             FirebaseFirestore.getInstance().collection("Categories").document(categoryId).collection("Questions")
-                                    .whereLessThanOrEqualTo("index", rand)
+                                    .whereGreaterThanOrEqualTo("index", random)
                                     .orderBy("index")
                                     .limit(snapshot.getDocuments().size()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override

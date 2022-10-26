@@ -2,6 +2,7 @@ package kashyap.anurag.quizx.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,6 +47,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+import kashyap.anurag.quizx.LoginActivity;
 import kashyap.anurag.quizx.R;
 import kashyap.anurag.quizx.databinding.FragmentProfileBinding;
 
@@ -89,9 +92,46 @@ public class ProfileFragment extends Fragment {
                 validateData();
             }
         });
+        binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLogoutDialog();
+            }
+        });
 
         return binding.getRoot();
     }
+
+    private void showLogoutDialog() {
+        Dialog instructionsDialog = new Dialog(getActivity(), R.style.instructionStyle);
+        instructionsDialog.setContentView(R.layout.logout_dialog);
+        instructionsDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView closeDialogBtn = instructionsDialog.findViewById(R.id.closeDialogBtn);
+        TextView logoutBtn = instructionsDialog.findViewById(R.id.logoutBtn);
+
+
+        instructionsDialog.setCancelable(true);
+
+        closeDialogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                instructionsDialog.dismiss();
+            }
+        });
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                instructionsDialog.dismiss();
+                firebaseAuth.signOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                getActivity().finishAffinity();
+
+            }
+        });
+        instructionsDialog.show();
+    }
+
     private void loadMyDetails() {
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.updateBtn.setVisibility(View.GONE);

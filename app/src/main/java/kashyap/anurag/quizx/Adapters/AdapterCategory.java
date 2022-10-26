@@ -126,7 +126,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String coins = ""+snapshot.child("coins").getValue();
-                int availableCoins = Integer.parseInt(coins);
+                long availableCoins = Long.parseLong(coins);
                 if (availableCoins < 200) {
                     Toast.makeText(context, "You need atLeast 200 coins to play quiz", Toast.LENGTH_SHORT).show();
                     showCoinNotAvailable();

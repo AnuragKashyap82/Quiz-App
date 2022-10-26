@@ -25,7 +25,7 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="40dp"
                 android:src="@drawable/ic_profile_white"
                 app:civ_border_color="@color/colorPrimary"
                 app:civ_border_width="1dp" />
@@ -118,6 +118,35 @@
                     android:visibility="gone"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/logoutLl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/updateLl"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginEnd="16dp">
+
+                <Button
+                    android:id="@+id/logoutBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Logout"
+                    android:textAllCaps="false"
+                    android:visibility="visible"
+                    android:background="@drawable/button_background"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarLog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 

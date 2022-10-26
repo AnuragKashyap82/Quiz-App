@@ -154,7 +154,6 @@ public class RegisterActivity extends AppCompatActivity {
         hashMap.put("name", ""+name);
         hashMap.put("email", ""+email);
         hashMap.put("profileImage", "");
-        hashMap.put("userType", "users");
         hashMap.put("uid", ""+firebaseAuth.getUid());
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseAuth.getUid());
