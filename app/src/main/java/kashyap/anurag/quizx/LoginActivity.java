@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = binding.passwordEt.getText().toString().trim();
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid Email!", Toast.LENGTH_SHORT).show();
         } else if (password.length() < 8) {
             Toast.makeText(this, "Password must contain 8 characters!!!", Toast.LENGTH_SHORT).show();
         } else {
